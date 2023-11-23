@@ -23,7 +23,7 @@ public class Articulos  implements java.io.Serializable, Identificable {
     private String desArt;
     private BigDecimal stock;
     private Set facturases = new HashSet(0);
-    private String[] columns_name = {"id", "nombre", "descripción", "stock", "familias", "facturas"};
+    private String[] columns_name = {"id", "nombre", "descripción", "stock", "familias"};
 
     public Articulos() {
     }

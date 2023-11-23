@@ -8,6 +8,7 @@ package controllers;
 import java.util.ArrayList;
 import org.hibernate.Session;
 import java.util.List;
+import java.util.Set;
 import models.Articulos;
 import models.Clientes;
 import models.Facturas;
@@ -69,6 +70,35 @@ public class SessionController {
                     break;
                 case "clientes":
                     result = clientes_ctrl.getClientes(this.ss);
+                    break;
+            }
+            closeSession();
+            return result;
+        }
+    }
+    
+    public Object[] getById(String id, String table){
+        if(!haveConnection()){
+            return null;
+        }else{
+            Object[] result = null;
+            openSession();
+            switch (table.toLowerCase()) {
+                case "familias":
+                    Familias familia = (Familias) ss.get(Familias.class, id);
+                    result = familia.convertToObjectArray();
+                    break;
+                case "articulos":
+                    Articulos articulo = (Articulos) ss.get(Articulos.class, id);
+                    result = articulo.convertToObjectArray();
+                    break;
+                case "facturas":
+                    Facturas factura = (Facturas) ss.get(Facturas.class, id);
+                    result = factura.convertToObjectArray();
+                    break;
+                case "clientes":
+                    Clientes cliente = (Clientes) ss.get(Clientes.class, id);
+                    result = cliente.convertToObjectArray();
                     break;
             }
             closeSession();
@@ -172,6 +202,47 @@ public class SessionController {
         }
     }
     
+    public void updateRegister(List<String> values, String table_selected, String id){
+        if(haveConnection()){
+            try{
+                openSession();
+                ts = ss.beginTransaction();
+                
+                switch(table_selected.toLowerCase()){
+                    case "familias":
+                        Familias familia = (Familias) ss.get(Familias.class, id);
+                        familias_ctrl.updateFamilia(familia, values);
+                        ss.update(familia);
+                        ts.commit();
+                        break;
+                    case "articulos":
+                        Articulos articulo = (Articulos) ss.get(Articulos.class, id);
+                        articulos_ctrl.updateArticulo(articulo, values);
+                        ss.save(articulo);
+                        ts.commit();
+                        break;
+                    case "facturas":
+                        Facturas factura = (Facturas) ss.get(Facturas.class, id);
+                        facturas_ctrl.updateFactura(factura, values);
+                        ss.save(factura);
+                        ts.commit();
+                        break;
+                    case "clientes":
+                        Clientes cliente = (Clientes) ss.get(Clientes.class, id);
+                        clientes_ctrl.updateCliente(cliente, values);
+                        ss.save(cliente);
+                        ts.commit();
+                        break;
+                }
+            }catch (Exception e) {
+                e.printStackTrace();
+                ts.rollback();
+            }finally{
+                closeSession();
+            }
+        }
+    }
+    
     public void deleteRegister(String id, String table_selected){
         if(haveConnection()){
             try{
@@ -188,7 +259,11 @@ public class SessionController {
                         }
                     case "articulos":
                         Articulos articulo = (Articulos) ss.get(Articulos.class, id);
-                        
+                        Set<Facturas> facturas = articulo.getFacturases();
+                        for(Facturas fac : facturas) {
+                            fac.getArticuloses().remove(articulo);
+                        }
+
                         if(articulo != null){
                             ss.delete(articulo);
                             ts.commit();
@@ -196,7 +271,11 @@ public class SessionController {
                         break;
                     case "facturas":
                         Facturas factura = (Facturas) ss.get(Facturas.class, id);
-                        
+                        Set<Articulos> articulos = factura.getArticuloses();
+                        for(Articulos art : articulos) {
+                            art.getFacturases().remove(factura);
+                        }
+
                         if(factura != null){
                             ss.delete(factura);
                             ts.commit();

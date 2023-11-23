@@ -49,4 +49,9 @@ public class FacturasController {
         ArrayList result = new ArrayList<>(factura.getArticuloses());
         return result;
     }
+    
+    public void updateFactura(Facturas factura, List<String> values){
+        factura.setTotalFac(new BigDecimal(values.get(0)));
+        factura.setMetodoPago(values.get(1));
+    }
 }

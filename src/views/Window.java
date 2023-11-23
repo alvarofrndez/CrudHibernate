@@ -57,7 +57,6 @@ public class Window extends javax.swing.JFrame {
     }
     
     public void startProgram(){
-        // TODO: refactorizar para poner global la varibale que lleva el numero de ventanas
         setEventWindow();
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         refreshTableTrue();
@@ -337,7 +336,57 @@ public class Window extends javax.swing.JFrame {
         update.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(component, "Editar fila " + id);
+                ModalUpdate inputPanel = null;
+        
+                if(table_selected.equals("familias")){
+                    ArrayList<String> list = new ArrayList<>();
+                    list.add("nombre");
+                    list.add("descripcion");
+                    inputPanel = new ModalUpdate(list, id, Arrays.asList(session_ctrl.getById(id, "familias")));
+                }else if(table_selected.equals("facturas")){
+                    ArrayList<String> list = new ArrayList<>();
+                    list.add("total");
+                    list.add("metodo de pago");
+                    inputPanel = new ModalUpdate(list, id, Arrays.asList(session_ctrl.getById(id, "facturas")));
+                }else if(table_selected.equals("clientes")){
+                    ArrayList<String> list = new ArrayList<>();
+                    list.add("nombre");
+                    list.add("correo");
+                    list.add("telefono");
+                    list.add("direccion");
+                    inputPanel = new ModalUpdate(list, id, Arrays.asList(session_ctrl.getById(id, "clientes")));
+                }else if(table_selected.equals("articulos")){
+                    ArrayList<String> list = new ArrayList<>();
+                    list.add("nombre");
+                    list.add("descripcion");
+                    list.add("stock");
+                    inputPanel = new ModalUpdate(list, id, Arrays.asList(session_ctrl.getById(id, "articulos")));
+                }
+                
+                
+                int result = JOptionPane.showConfirmDialog(null, inputPanel, "Introduzca los valores",
+                        JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+
+                if (result == JOptionPane.OK_OPTION) {
+                    List<String> values = inputPanel.getValues();
+                    if(table_selected.equals("familias")){
+                        if(session_ctrl.getFamilias_ctrl().checkValues(values))
+                            session_ctrl.updateRegister(values, table_selected, id);
+                    }else if(table_selected.equals("facturas")){
+                        if(session_ctrl.getFacturas_ctrl().checkValues(values))
+                            session_ctrl.updateRegister(values, table_selected, id);
+                    }else if(table_selected.equals("clientes")){
+                        if(session_ctrl.getClientes_ctrl().checkValues(values))
+                            session_ctrl.updateRegister(values, table_selected, id);
+                    }else if(table_selected.equals("articulos")){
+                        if(session_ctrl.getArticulos_ctrl().checkValues(values))
+                            session_ctrl.updateRegister(values, table_selected, id);
+                    }
+
+                    refreshTableFalse();
+                }
+
+                JOptionPane.getRootFrame().dispose();
             }
         });
 
@@ -354,7 +403,8 @@ public class Window extends javax.swing.JFrame {
             }
         });
         
-        if(table_selected.equals("articulos")){
+        // TODO: hacer que tambien se vea para familias y clientes
+        if(table_selected.equals("articulos") || table_selected.equals("clientes")){
             JMenuItem view = new JMenuItem("Ver facturas");
             view.addActionListener(new ActionListener() {
                 @Override
@@ -365,7 +415,7 @@ public class Window extends javax.swing.JFrame {
             });
             
             popup_menu.add(view);
-        }else if(table_selected.equals("facturas")){
+        }else if(table_selected.equals("facturas") || table_selected.equals("familias")){
             JMenuItem view = new JMenuItem("Ver articulos");
             view.addActionListener(new ActionListener() {
                 @Override
@@ -452,40 +502,12 @@ public class Window extends javax.swing.JFrame {
                 model.addRow(((Familias) register).convertToObjectArray());
             }else if(register instanceof Facturas){
                 Object[] rowData = ((Facturas) register).convertToObjectArray();
-                rowData[rowData.length - 1] = createDropdown(((Facturas) register).getArticuloses());
                 model.addRow(rowData);
             }else if(register instanceof Clientes){
                 model.addRow(((Clientes) register).convertToObjectArray());
             }else if(register instanceof Articulos){
                 model.addRow(((Articulos) register).convertToObjectArray());
             }
-        }
-        
-        
-        table_crud.getColumnModel().getColumn(model.getColumnCount() - 1).setCellEditor(new DefaultCellEditor(createDropdown(new HashSet<>())));
-        table_crud.getColumnModel().getColumn(model.getColumnCount() - 1).setCellRenderer(new DropdownCellRenderer());
-    }
-    
-    private JComboBox<String> createDropdown(Set values) {
-        ArrayList<String> values_list = new ArrayList<>();
-        
-        for (Object register : values){
-            if (register instanceof Identificable) {
-                values_list.add(((Identificable) register).getIdentificator());
-            }
-        }
-        
-        return new JComboBox<>(values_list.toArray(new String[0]));
-    }
-    
-    private static class DropdownCellRenderer extends DefaultTableCellRenderer {
-
-        @Override
-        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-            if (value instanceof JComboBox) {
-                return (JComboBox<?>) value;
-            }
-            return super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
         }
     }
     

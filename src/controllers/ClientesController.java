@@ -36,4 +36,11 @@ public class ClientesController {
         
         return new Clientes(id,nomCli,correoCli,telCli,direcCli, new HashSet<>());
     }
+    
+    public void updateCliente(Clientes cliente, List<String> values){
+        cliente.setNomCli(values.get(0));
+        cliente.setCorreoCli(values.get(1));
+        cliente.setTelCli(values.get(2));
+        cliente.setDirecCli(values.get(3));
+    }
 }

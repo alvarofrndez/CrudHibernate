@@ -19,7 +19,7 @@ public class Facturas  implements java.io.Serializable, Identificable {
     private BigDecimal totalFac;
     private String metodoPago;
     private Set articuloses = new HashSet(0);
-    private String[] columns_name = {"id", "fecha", "total", "metodo de pago", "clientes", "articulos"};
+    private String[] columns_name = {"id", "fecha", "total", "metodo de pago", "clientes"};
 
     public Facturas() {
     }

@@ -37,6 +37,7 @@ public class TableForeings extends javax.swing.JPanel {
         initComponents();
         this.id = id;
         this.table = table;
+        System.out.println(id + " " + table);
         refreshTableTrue();
     }
 

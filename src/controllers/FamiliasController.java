@@ -36,4 +36,9 @@ public class FamiliasController {
         
         return new Familias(id,nomFam,desFam,fechaCreacion, new HashSet<>());
     }
+    
+    public void updateFamilia(Familias familia, List<String> values){
+        familia.setNomFam(values.get(0));
+        familia.setDesFam(values.get(1));
+    }
 }
