@@ -360,7 +360,7 @@ public class Window extends javax.swing.JFrame {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     JPanel panel = new TableForeings(id, "facturas");
-                    JOptionPane.showMessageDialog(null, panel, "", JOptionPane.OK_OPTION);
+                    JOptionPane.showMessageDialog(null, panel, null, JOptionPane.PLAIN_MESSAGE);
                 }
             });
             
@@ -371,7 +371,7 @@ public class Window extends javax.swing.JFrame {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     JPanel panel = new TableForeings(id, "articulos");
-                    JOptionPane.showMessageDialog(null, panel, "", JOptionPane.OK_OPTION);
+                    JOptionPane.showMessageDialog(null, panel, null, JOptionPane.PLAIN_MESSAGE);
                 }
             });
             

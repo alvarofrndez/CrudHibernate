@@ -6,7 +6,7 @@
 package controllers;
 
 import java.math.BigDecimal;
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import models.Articulos;
@@ -37,5 +37,11 @@ public class ArticulosController {
         BigDecimal stock = new BigDecimal(values.get(3));
 
         return new Articulos(id, familia, nomArt,desArt,stock, new HashSet<>());
+    }
+    
+    public ArrayList getArticuloById(Session ss, String id){
+        Articulos articulo = (Articulos) ss.get(Articulos.class, id);
+        ArrayList result = new ArrayList<>(articulo.getFacturases());
+        return result;
     }
 }

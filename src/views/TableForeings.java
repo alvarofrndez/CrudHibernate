@@ -6,7 +6,15 @@
 package views;
 
 import controllers.SessionController;
+import java.awt.Component;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.List;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 import models.Articulos;
 import models.Facturas;
@@ -44,6 +52,8 @@ public class TableForeings extends javax.swing.JPanel {
         jScrollPane1 = new javax.swing.JScrollPane();
         jtable_foreings = new javax.swing.JTable();
         title_table = new javax.swing.JLabel();
+        add = new javax.swing.JButton();
+        dropdown = new javax.swing.JComboBox<>();
 
         jtable_foreings.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -56,10 +66,19 @@ public class TableForeings extends javax.swing.JPanel {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
+        jtable_foreings.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jtable_foreingsMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(jtable_foreings);
 
         title_table.setFont(new java.awt.Font("Tahoma", 0, 36)); // NOI18N
         title_table.setText("jLabel1");
+
+        add.setText("jButton1");
+
+        dropdown.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -67,23 +86,75 @@ public class TableForeings extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 571, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 609, Short.MAX_VALUE)
                 .addGap(15, 15, 15))
             .addGroup(layout.createSequentialGroup()
-                .addGap(240, 240, 240)
-                .addComponent(title_table)
+                .addGap(265, 265, 265)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(title_table)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(add)
+                        .addGap(21, 21, 21)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(dropdown, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(285, 285, 285))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(32, 32, 32)
+                .addContainerGap()
                 .addComponent(title_table)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 39, Short.MAX_VALUE)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 301, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 25, Short.MAX_VALUE)
+                .addComponent(dropdown, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(add)
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 309, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void jtable_foreingsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jtable_foreingsMouseClicked
+        // TODO add your handling code here:
+        if (SwingUtilities.isRightMouseButton(evt)) {
+            int row = jtable_foreings.rowAtPoint(evt.getPoint());
+
+            showPopUp(evt.getComponent(), evt.getX(), evt.getY(), row, (String) jtable_foreings.getValueAt(row, 0));
+        }
+    }//GEN-LAST:event_jtable_foreingsMouseClicked
+
+    public void showPopUp(Component component, int x, int y, int selectedRow, String id){
+        // TODO: hacer eventos
+        JPopupMenu popup_menu = new JPopupMenu();
+
+        JMenuItem update = new JMenuItem("Editar");
+        update.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JOptionPane.showMessageDialog(component, "Editar fila " + id);
+            }
+        });
+
+        JMenuItem delete = new JMenuItem("Borrar");
+        delete.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int result = new DialogMessages("Eliminar registro", "¿Desea borrar el registro " + id + " ?", 2).showMessageConfirm();
+                
+                if(result == JOptionPane.OK_OPTION){
+                    session_ctrl.deleteRegister(id, table);
+                    refreshTableTrue();
+                }
+            }
+        });
+        
+        popup_menu.add(update);
+        popup_menu.add(delete);
+
+        popup_menu.show(component, x, y);
+    }
+    
     public void updateTable(Boolean modify_columns) {
         DefaultTableModel model = (DefaultTableModel) jtable_foreings.getModel();
         
@@ -110,7 +181,12 @@ public class TableForeings extends javax.swing.JPanel {
                 model.addRow(rowData);
             }
         }
-
+    }
+    
+    public void updateDropdown(){
+        dropdown.removeAllItems();
+        
+        session_ctrl.getOthers(id, table);
     }
     
     public void refreshTableTrue(){
@@ -122,10 +198,14 @@ public class TableForeings extends javax.swing.JPanel {
             columns_name = new String[]{"id", "nombre", "descripción", "stock"};
         }
         updateTable(true);
+        updateDropdown();
         title_table.setText(table);
+        add.setText("asociar " + table.substring(0, table.length() - 1));
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton add;
+    private javax.swing.JComboBox<String> dropdown;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jtable_foreings;
     private javax.swing.JLabel title_table;

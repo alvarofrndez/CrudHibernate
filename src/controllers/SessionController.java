@@ -97,6 +97,27 @@ public class SessionController {
         }
     }
     
+    public List getOthers(String id, String table){
+        if(!haveConnection()){
+            return null;
+        }else{
+            List result = null;
+            openSession();
+            switch (table.toLowerCase()) {
+                case "facturas":
+                    Articulos articulo = (Articulos) ss.get(Articulos.class, id);
+                    result = new ArrayList<>(articulo.getFacturases());
+                    break;
+                case "articulos":
+                    Facturas factura = (Facturas) ss.get(Facturas.class, id);
+                    result = new ArrayList<>(factura.getArticuloses());
+                    break;
+            }
+            closeSession();
+            return result;
+        }
+    }
+    
     public String[] getcolumnsName(String table_selected){
         switch(table_selected.toLowerCase()){
             case "familias":

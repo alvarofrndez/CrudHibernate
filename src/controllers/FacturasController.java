@@ -6,6 +6,7 @@
 package controllers;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -41,5 +42,11 @@ public class FacturasController {
         factura.getArticuloses().add(articulo);
         
         return factura;
+    }
+    
+    public ArrayList getFacturaById(Session ss, String id){
+        Facturas factura = (Facturas) ss.get(Facturas.class, id);
+        ArrayList result = new ArrayList<>(factura.getArticuloses());
+        return result;
     }
 }
