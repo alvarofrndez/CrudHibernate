@@ -22,7 +22,7 @@ public class Familias  implements java.io.Serializable, Identificable {
     private String desFam;
     private Date fechaCreacion;
     private Set articuloses = new HashSet(0);
-    private String[] columns_name = {"id", "nombre", "descuento", "fecha", "articulos"};
+    private String[] columns_name = {"id", "nombre", "descuento", "fecha"};
      
     public Familias() {
     }

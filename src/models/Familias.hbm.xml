@@ -17,7 +17,7 @@
         <property name="fechaCreacion" type="date">
             <column name="FECHA_CREACION" length="7" />
         </property>
-        <set name="articuloses" table="ARTICULOS" inverse="true" lazy="true" fetch="select" cascade="all">
+        <set name="articuloses" table="ARTICULOS" inverse="true" lazy="true" fetch="select">
             <key>
                 <column name="ID_FAM" />
             </key>

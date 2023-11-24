@@ -85,8 +85,14 @@ public class Articulos  implements java.io.Serializable, Identificable {
     }
     
     public Object[] convertToObjectArray(){
-        Object[] object_data = {idArt, nomArt, desArt, stock, familias.getIdentificator()};
-        return object_data;
+        if(familias != null){
+            Object[] object_data = {idArt, nomArt, desArt, stock, familias.getIdentificator()};
+            return object_data; 
+        }else{
+            Object[] object_data = {idArt, nomArt, desArt, stock, ""};
+            return object_data; 
+        }
+
     }
     
     @Override

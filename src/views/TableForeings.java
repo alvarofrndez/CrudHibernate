@@ -79,6 +79,11 @@ public class TableForeings extends javax.swing.JPanel {
         title_table.setText("jLabel1");
 
         add.setText("jButton1");
+        add.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addActionPerformed(evt);
+            }
+        });
 
         dropdown.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
@@ -126,6 +131,13 @@ public class TableForeings extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_jtable_foreingsMouseClicked
 
+    private void addActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addActionPerformed
+        // TODO add your handling code here:
+        if(!session_ctrl.associateRegister(String.valueOf(dropdown.getSelectedItem()).split("-")[0].trim(), id, table_selected))
+            System.out.println("ese registro ya esta asociado a otro");
+        refreshTableTrue();
+    }//GEN-LAST:event_addActionPerformed
+
     public void showPopUp(Component component, int x, int y, int selectedRow, String id, String id_table){
         JPopupMenu popup_menu = new JPopupMenu();
 
@@ -167,7 +179,6 @@ public class TableForeings extends javax.swing.JPanel {
                 model.addRow(rowData);
             }else if(register instanceof Articulos){
                 Object[] rowData = ((Articulos) register).convertToObjectArray();
-                rowData[rowData.length - 2] = null;
                 rowData[rowData.length - 1] = null;
                 model.addRow(rowData);
             }

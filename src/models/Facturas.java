@@ -86,8 +86,13 @@ public class Facturas  implements java.io.Serializable, Identificable {
     }
     
     public Object[] convertToObjectArray(){
-        Object[] object_data = {idFac, fechaFac, totalFac, metodoPago, clientes.getIdentificator(), ""};
-        return object_data;
+        if(clientes != null){
+            Object[] object_data = {idFac, fechaFac, totalFac, metodoPago, clientes.getIdentificator(), ""};
+            return object_data;
+        }else{
+            Object[] object_data = {idFac, fechaFac, totalFac, metodoPago, "", ""};
+            return object_data;
+        }
     }
     
     @Override

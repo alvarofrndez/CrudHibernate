@@ -229,6 +229,82 @@ public class SessionController {
         }
     }
     
+    public Boolean associateRegister(String id, String id_table, String table_selected){
+        if(haveConnection()){
+            try{
+                openSession();
+                ts = ss.beginTransaction();
+                
+                switch(table_selected.toLowerCase()){
+                    case "familias":
+                        Familias familia = (Familias) ss.get(Familias.class, id_table);
+                        Articulos art_fam = (Articulos) ss.get(Articulos.class, id);
+  
+                        if(familia != null && art_fam != null && art_fam.getFamilias() == null){
+                            art_fam.setFamilias(familia);
+                            familia.getArticuloses().add(art_fam);
+                        
+                            ss.update(familia);
+                            ss.update(art_fam);
+                            ts.commit();
+                            return true;
+                        }
+                        return false;
+                    case "articulos":
+                        Articulos articulo = (Articulos) ss.get(Articulos.class, id_table);
+                        Facturas fac_art = (Facturas) ss.get(Facturas.class, id);
+                        
+                        if(articulo != null && fac_art != null){
+                            articulo.getFacturases().add(fac_art);
+                            fac_art.getArticuloses().add(articulo);
+                            
+                            ss.update(articulo);
+                            ss.update(fac_art);
+                            ts.commit();
+                            return true;
+                        }
+                        return false;
+                    case "facturas":
+                        Facturas factura = (Facturas) ss.get(Facturas.class, id_table);
+                        Articulos art_fac = (Articulos) ss.get(Articulos.class, id);
+                        
+                        if(factura != null && art_fac != null){
+                            factura.getArticuloses().add(art_fac);
+                            art_fac.getFacturases().add(factura);
+                            
+                            ss.update(factura);
+                            ss.update(art_fac);
+                            ts.commit();
+                            return true;
+                        }
+                        return false;
+                    case "clientes":
+                        Clientes cliente = (Clientes) ss.get(Clientes.class, id_table);
+                        Facturas fac_cli = (Facturas) ss.get(Facturas.class, id);
+                        
+                        if(cliente != null && fac_cli != null && fac_cli.getClientes() == null){
+                            cliente.getFacturases().add(fac_cli);
+                            fac_cli.setClientes(cliente);
+                            
+                            ss.update(cliente);
+                            ss.update(fac_cli);
+                            ts.commit();
+                            return true;
+                        }
+                        return false;
+                }
+            }catch (Exception e) {
+                System.out.println(e.getMessage());
+                if(ts != null)
+                    ts.rollback();
+                return false;
+            }finally{
+                closeSession();
+            }
+        }
+        return false; 
+    }
+    
     public void updateRegister(List<String> values, String table_selected, String id){
         if(haveConnection()){
             try{
@@ -279,11 +355,24 @@ public class SessionController {
                 switch(table_selected.toLowerCase()){
                     case "familias":
                         Familias familia = (Familias) ss.get(Familias.class, id);
+                        for(Object art : familia.getArticuloses()){
+                            Set<Facturas> facturas = ((Articulos) art).getFacturases();
+                            for(Facturas fac : facturas) {
+                                fac.getArticuloses().remove(art);
+                            }
+
+                            if(art != null){
+                                ss.delete(art);
+                                ts.commit();
+                                ts = ss.beginTransaction();
+                            }
+                        }
                         
                         if(familia != null){
                             ss.delete(familia);
                             ts.commit();
                         }
+                        break;
                     case "articulos":
                         Articulos articulo = (Articulos) ss.get(Articulos.class, id);
                         Set<Facturas> facturas = articulo.getFacturases();
@@ -348,26 +437,28 @@ public class SessionController {
                         }
                         break;
                     case "articulos":
-                        Articulos articulo = (Articulos) ss.get(Articulos.class, id);
-                        Set<Facturas> facturas = articulo.getFacturases();
-                        for(Facturas fac : facturas) {
-                            fac.getArticuloses().remove(articulo);
-                        }
-
-                        if(articulo != null){
-                            ss.delete(articulo);
+                        Articulos articulo = (Articulos) ss.get(Articulos.class, id_table);
+                        Facturas fac_art = (Facturas) ss.get(Facturas.class, id);
+                        
+                        if(articulo != null && fac_art != null){
+                            articulo.getFacturases().remove(fac_art);
+                            fac_art.getArticuloses().remove(articulo);
+                            
+                            ss.update(articulo);
+                            ss.update(fac_art);
                             ts.commit();
                         }
                         break;
                     case "facturas":
-                        Facturas factura = (Facturas) ss.get(Facturas.class, id);
-                        Set<Articulos> articulos = factura.getArticuloses();
-                        for(Articulos art : articulos) {
-                            art.getFacturases().remove(factura);
-                        }
-
-                        if(factura != null){
-                            ss.delete(factura);
+                        Facturas factura = (Facturas) ss.get(Facturas.class, id_table);
+                        Articulos art_fac = (Articulos) ss.get(Articulos.class, id);
+                        
+                        if(factura != null && art_fac != null){
+                            factura.getArticuloses().remove(art_fac);
+                            art_fac.getFacturases().remove(factura);
+                            
+                            ss.update(factura);
+                            ss.update(art_fac);
                             ts.commit();
                         }
                         break;

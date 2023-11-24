@@ -22,7 +22,7 @@ public class Clientes  implements java.io.Serializable, Identificable {
     private String telCli;
     private String direcCli;
     private Set facturases = new HashSet(0);
-    private String[] columns_name = {"id", "nombre", "correo", "teléfono", "dirección", "facturas"};
+    private String[] columns_name = {"id", "nombre", "correo", "teléfono", "dirección"};
 
     public Clientes() {
     }
