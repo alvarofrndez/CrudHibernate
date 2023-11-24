@@ -27,6 +27,29 @@ public class ArticulosController {
     }
     
     public Boolean checkValues(List<String> values){
+        if(values.size() > 3){
+            if(!(values.get(0) instanceof String))
+                return false;
+            if(!(values.get(1) instanceof String))
+                return false;
+            if(!(values.get(2) instanceof String))
+                return false;
+            try{
+                new BigDecimal(values.get(3));
+            }catch (Exception e){
+                return false;
+            }
+        }else{
+            if(!(values.get(0) instanceof String))
+                return false;
+            if(!(values.get(1) instanceof String))
+                return false;
+            try{
+                new BigDecimal(values.get(2));
+            }catch (Exception e){
+                return false;
+            }
+        }
         return true;
     }
     

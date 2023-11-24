@@ -190,7 +190,7 @@ public class SessionController {
         }
     }
     
-    public void addRegister(List<String> values, String table_selected){
+    public Boolean addRegister(List<String> values, String table_selected){
         if(haveConnection()){
             try{
                 openSession();
@@ -201,6 +201,7 @@ public class SessionController {
                         Familias familia = familias_ctrl.addFamilia(values);
                         ss.save(familia);
                         ts.commit();
+                        break;
                     case "articulos":
                         Familias familia_foreing = (Familias) ss.get(Familias.class, values.get(4).split("-")[0].trim());
                         Articulos articulo = articulos_ctrl.addArticulo(values, familia_foreing);
@@ -208,8 +209,8 @@ public class SessionController {
                         ts.commit();
                         break;
                     case "facturas":
-                        Clientes cliente_foreing = (Clientes) ss.get(Clientes.class, values.get(4).split("-")[0].trim());
-                        Articulos articulo_foreing = (Articulos) ss.get(Articulos.class, values.get(5).split("-")[0].trim());
+                        Clientes cliente_foreing = (Clientes) ss.get(Clientes.class, values.get(3).split("-")[0].trim());
+                        Articulos articulo_foreing = (Articulos) ss.get(Articulos.class, values.get(4).split("-")[0].trim());
                         Facturas factura = facturas_ctrl.addFactura(values, cliente_foreing, articulo_foreing);
                         ss.save(factura);
                         ts.commit();
@@ -220,13 +221,15 @@ public class SessionController {
                         ts.commit();
                         break;
                 }
+                return true;
             }catch (Exception e) {
-                e.printStackTrace();
                 ts.rollback();
+                return false;
             }finally{
                 closeSession();
             }
         }
+        return false;
     }
     
     public Boolean associateRegister(String id, String id_table, String table_selected){
@@ -294,7 +297,6 @@ public class SessionController {
                         return false;
                 }
             }catch (Exception e) {
-                System.out.println(e.getMessage());
                 if(ts != null)
                     ts.rollback();
                 return false;
@@ -338,7 +340,6 @@ public class SessionController {
                         break;
                 }
             }catch (Exception e) {
-                e.printStackTrace();
                 ts.rollback();
             }finally{
                 closeSession();
@@ -407,7 +408,6 @@ public class SessionController {
                         break;
                 }
             }catch (Exception e) {
-                System.out.println(e.getMessage());
                 if(ts != null)
                     ts.rollback();
             }finally{
@@ -477,7 +477,6 @@ public class SessionController {
                         break;
                 }
             }catch (Exception e) {
-                System.out.println(e.getMessage());
                 if(ts != null)
                     ts.rollback();
             }finally{

@@ -134,7 +134,7 @@ public class TableForeings extends javax.swing.JPanel {
     private void addActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addActionPerformed
         // TODO add your handling code here:
         if(!session_ctrl.associateRegister(String.valueOf(dropdown.getSelectedItem()).split("-")[0].trim(), id, table_selected))
-            System.out.println("ese registro ya esta asociado a otro");
+            new DialogMessages("Registro ya asociado", "El regisro que elegiste ya esta asociado a otro", 1).showMessage();
         refreshTableTrue();
     }//GEN-LAST:event_addActionPerformed
 

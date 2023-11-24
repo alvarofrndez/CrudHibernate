@@ -24,6 +24,27 @@ public class ClientesController {
     }
     
     public Boolean checkValues(List<String> values){
+        if(values.size() > 4){
+            if(!(values.get(0) instanceof String))
+                return false;
+            if(!(values.get(1) instanceof String))
+                return false;
+            if(!(values.get(2) instanceof String))
+                return false;
+            if(!(values.get(3) instanceof String))
+                return false;
+            if(!(values.get(4) instanceof String))
+                return false;
+        }else{
+            if(!(values.get(0) instanceof String))
+                return false;
+            if(!(values.get(1) instanceof String))
+                return false;
+            if(!(values.get(2) instanceof String))
+                return false;
+            if(!(values.get(3) instanceof String))
+                return false;
+        }
         return true;
     }
     

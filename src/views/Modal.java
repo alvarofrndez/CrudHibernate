@@ -69,7 +69,7 @@ public class Modal extends javax.swing.JPanel {
     }
     
     public void addField(String field){
-        if(!field.equals("familias") && !field.equals("clientes") && !field.equals("lineas")){
+        if(!field.equals("familias") && !field.equals("clientes") && !field.equals("lineas") && !field.equals("fecha")){
             add(new JLabel(field));
             JTextField text_field = new JTextField();
             add(text_field);

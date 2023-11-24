@@ -29,14 +29,33 @@ public class FacturasController {
     }
     
     public Boolean checkValues(List<String> values){
+        if(values.size() > 2){
+            if(!(values.get(0) instanceof String))
+                return false;
+            try{
+                new BigDecimal(values.get(1));
+            }catch (Exception e){
+                return false;
+            }
+            if(!(values.get(2) instanceof String))
+                return false;
+        }else{
+            try{
+                new BigDecimal(values.get(0));
+            }catch (Exception e){
+                return false;
+            }
+            if(!(values.get(1) instanceof String))
+                return false;
+        }
         return true;
     }
     
     public Facturas addFactura(List<String> values, Clientes cliente, Articulos articulo){
         String id = values.get(0);
         Date fechaFac = new Date();
-        BigDecimal totalFac = new BigDecimal(values.get(2));
-        String metodoPago = values.get(3);
+        BigDecimal totalFac = new BigDecimal(values.get(1));
+        String metodoPago = values.get(2);
         
         Facturas factura = new Facturas(id, cliente, fechaFac,totalFac,metodoPago, new HashSet<>());
         factura.getArticuloses().add(articulo);

@@ -357,6 +357,7 @@ public class Window extends javax.swing.JFrame {
                     inputPanel = new ModalUpdate(list, id, Arrays.asList(session_ctrl.getById(id, "familias")));
                 }else if(table_selected.equals("facturas")){
                     ArrayList<String> list = new ArrayList<>();
+                    list.add("fecha");
                     list.add("total");
                     list.add("metodo de pago");
                     inputPanel = new ModalUpdate(list, id, Arrays.asList(session_ctrl.getById(id, "facturas")));
@@ -382,17 +383,27 @@ public class Window extends javax.swing.JFrame {
                 if (result == JOptionPane.OK_OPTION) {
                     List<String> values = inputPanel.getValues();
                     if(table_selected.equals("familias")){
-                        if(session_ctrl.getFamilias_ctrl().checkValues(values))
+                        if(session_ctrl.getFamilias_ctrl().checkValues(values)){
                             session_ctrl.updateRegister(values, table_selected, id);
+                        }
+                        else
+                            new DialogMessages("Datos erroneos", "Los datos que introduciste son erroneos", 0).showMessage();
                     }else if(table_selected.equals("facturas")){
-                        if(session_ctrl.getFacturas_ctrl().checkValues(values))
+                        if(session_ctrl.getFacturas_ctrl().checkValues(values)){
                             session_ctrl.updateRegister(values, table_selected, id);
+                        }
+                        else
+                            new DialogMessages("Datos erroneos", "Los datos que introduciste son erroneos", 0).showMessage();
                     }else if(table_selected.equals("clientes")){
-                        if(session_ctrl.getClientes_ctrl().checkValues(values))
+                        if(session_ctrl.getClientes_ctrl().checkValues(values)){
                             session_ctrl.updateRegister(values, table_selected, id);
+                        }else
+                            new DialogMessages("Datos erroneos", "Los datos que introduciste son erroneos", 0).showMessage();
                     }else if(table_selected.equals("articulos")){
-                        if(session_ctrl.getArticulos_ctrl().checkValues(values))
+                        if(session_ctrl.getArticulos_ctrl().checkValues(values)){
                             session_ctrl.updateRegister(values, table_selected, id);
+                        }else
+                            new DialogMessages("Datos erroneos", "Los datos que introduciste son erroneos", 0).showMessage();
                     }
 
                     refreshTableFalse();
@@ -567,7 +578,6 @@ public class Window extends javax.swing.JFrame {
         if(table_selected.equals("articulos")){
             List<List<Object>> list = new ArrayList<>();
             list.add(session_ctrl.getTable("familias"));
-            list.add(session_ctrl.getTable("facturas"));
             inputPanel = new Modal(Arrays.asList(columns_name), list);
         }else if(table_selected.equals("facturas")){
             List<List<Object>> list = new ArrayList<>();
@@ -585,17 +595,33 @@ public class Window extends javax.swing.JFrame {
         if (result == JOptionPane.OK_OPTION) {
             List<String> values = inputPanel.getValues(false);
             if(table_selected.equals("familias")){
-                if(session_ctrl.getFamilias_ctrl().checkValues(values))
-                    session_ctrl.addRegister(values, table_selected);
+                if(session_ctrl.getFamilias_ctrl().checkValues(values)){
+                    if(!session_ctrl.addRegister(values, table_selected))
+                        new DialogMessages("Error al añadir", "Ocurrio un error al añadir", 0).showMessage();
+                }
+                else
+                    new DialogMessages("Datos erroneos", "Los datos que introduciste son erroneos", 0).showMessage();
             }else if(table_selected.equals("facturas")){
-                if(session_ctrl.getFacturas_ctrl().checkValues(values))
-                    session_ctrl.addRegister(inputPanel.getValues(true), table_selected);
+                if(session_ctrl.getFacturas_ctrl().checkValues(values)){
+                    if(!session_ctrl.addRegister(inputPanel.getValues(true), table_selected))
+                        new DialogMessages("Error al añadir", "Ocurrio un error al añadir", 0).showMessage();
+                }
+                else
+                    new DialogMessages("Datos erroneos", "Los datos que introduciste son erroneos", 0).showMessage();
             }else if(table_selected.equals("clientes")){
-                if(session_ctrl.getClientes_ctrl().checkValues(values))
-                    session_ctrl.addRegister(values, table_selected);
+                if(session_ctrl.getClientes_ctrl().checkValues(values)){
+                    if(!session_ctrl.addRegister(values, table_selected))
+                        new DialogMessages("Error al añadir", "Ocurrio un error al añadir", 0).showMessage();
+                }
+                else
+                    new DialogMessages("Datos erroneos", "Los datos que introduciste son erroneos", 0).showMessage();
             }else if(table_selected.equals("articulos")){
-                if(session_ctrl.getArticulos_ctrl().checkValues(values))
-                    session_ctrl.addRegister(inputPanel.getValues(true), table_selected);
+                if(session_ctrl.getArticulos_ctrl().checkValues(values)){
+                   if(!session_ctrl.addRegister(inputPanel.getValues(true), table_selected))
+                        new DialogMessages("Error al añadir", "Ocurrio un error al añadir", 0).showMessage(); 
+                }
+                else
+                    new DialogMessages("Datos erroneos", "Los datos que introduciste son erroneos", 0).showMessage();
             }
             
             refreshTableFalse();
