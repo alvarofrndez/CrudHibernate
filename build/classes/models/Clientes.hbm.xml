@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated Nov 22, 2023 1:40:19 PM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="models.Clientes" table="CLIENTES" schema="C##HIBERNATECRUD" optimistic-lock="version">
+        <id name="idCli" type="string">
+            <column name="ID_CLI" />
+            <generator class="assigned" />
+        </id>
+        <property name="nomCli" type="string">
+            <column name="NOM_CLI" not-null="true" />
+        </property>
+        <property name="correoCli" type="string">
+            <column name="CORREO_CLI" />
+        </property>
+        <property name="telCli" type="string">
+            <column name="TEL_CLI" length="15" />
+        </property>
+        <property name="direcCli" type="string">
+            <column name="DIREC_CLI" />
+        </property>
+        <set name="facturases" table="FACTURAS" inverse="true" lazy="true" fetch="select" cascade="all">
+            <key>
+                <column name="ID_CLI" />
+            </key>
+            <one-to-many class="models.Facturas" />
+        </set>
+    </class>
+</hibernate-mapping>

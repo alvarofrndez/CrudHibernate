@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated Nov 22, 2023 1:40:19 PM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="models.Articulos" table="ARTICULOS" schema="C##HIBERNATECRUD" optimistic-lock="version">
+        <id name="idArt" type="string">
+            <column name="ID_ART" />
+            <generator class="assigned" />
+        </id>
+        <many-to-one name="familias" class="models.Familias" fetch="select" lazy="false">
+            <column name="ID_FAM" />
+        </many-to-one>
+        <property name="nomArt" type="string">
+            <column name="NOM_ART" not-null="true" />
+        </property>
+        <property name="desArt" type="string">
+            <column name="DES_ART" />
+        </property>
+        <property name="stock" type="big_decimal">
+            <column name="STOCK" precision="22" scale="0" />
+        </property>
+        <set name="facturases" table="LINEAFACTURA" inverse="true" lazy="false" fetch="select">
+            <key>
+                <column name="ID_ART" not-null="true" />
+            </key>
+            <many-to-many entity-name="models.Facturas">
+                <column name="ID_FAC" not-null="true" />
+            </many-to-many>
+        </set>
+    </class>
+</hibernate-mapping>
