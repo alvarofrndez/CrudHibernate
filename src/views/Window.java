@@ -404,29 +404,52 @@ public class Window extends javax.swing.JFrame {
         });
         
         // TODO: hacer que tambien se vea para familias y clientes
-        if(table_selected.equals("articulos") || table_selected.equals("clientes")){
+        if(table_selected.equals("articulos")){
             JMenuItem view = new JMenuItem("Ver facturas");
             view.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    JPanel panel = new TableForeings(id, "facturas");
+                    JPanel panel = new TableForeings(id, "facturas", "articulos");
                     JOptionPane.showMessageDialog(null, panel, null, JOptionPane.PLAIN_MESSAGE);
                 }
             });
             
             popup_menu.add(view);
-        }else if(table_selected.equals("facturas") || table_selected.equals("familias")){
+        }else if(table_selected.equals("clientes")){
+            JMenuItem view = new JMenuItem("Ver facturas");
+            view.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    JPanel panel = new TableForeings(id, "facturas", "clientes");
+                    JOptionPane.showMessageDialog(null, panel, null, JOptionPane.PLAIN_MESSAGE);
+                }
+            });
+            
+            popup_menu.add(view);
+        }else if(table_selected.equals("facturas")){
             JMenuItem view = new JMenuItem("Ver articulos");
             view.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    JPanel panel = new TableForeings(id, "articulos");
+                    JPanel panel = new TableForeings(id, "articulos", "facturas");
+                    JOptionPane.showMessageDialog(null, panel, null, JOptionPane.PLAIN_MESSAGE);
+                }
+            });
+            
+            popup_menu.add(view);
+        }else if(table_selected.equals("familias")){
+            JMenuItem view = new JMenuItem("Ver articulos");
+            view.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    JPanel panel = new TableForeings(id, "articulos", "familias");
                     JOptionPane.showMessageDialog(null, panel, null, JOptionPane.PLAIN_MESSAGE);
                 }
             });
             
             popup_menu.add(view);
         }
+        
 
         popup_menu.add(update);
         popup_menu.add(delete);

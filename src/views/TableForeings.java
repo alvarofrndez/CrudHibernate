@@ -29,15 +29,16 @@ public class TableForeings extends javax.swing.JPanel {
     private List registers_list;
     private String id;
     private String table;
+    private String table_selected;
     
     /**
      * Creates new form TableForeings
      */
-    public TableForeings(String id, String table) {
+    public TableForeings(String id, String table, String table_selected) {
         initComponents();
         this.id = id;
         this.table = table;
-        System.out.println(id + " " + table);
+        this.table_selected = table_selected;
         refreshTableTrue();
     }
 
@@ -121,36 +122,25 @@ public class TableForeings extends javax.swing.JPanel {
         if (SwingUtilities.isRightMouseButton(evt)) {
             int row = jtable_foreings.rowAtPoint(evt.getPoint());
 
-            showPopUp(evt.getComponent(), evt.getX(), evt.getY(), row, (String) jtable_foreings.getValueAt(row, 0));
+            showPopUp(evt.getComponent(), evt.getX(), evt.getY(), row, (String) jtable_foreings.getValueAt(row, 0), id);
         }
     }//GEN-LAST:event_jtable_foreingsMouseClicked
 
-    public void showPopUp(Component component, int x, int y, int selectedRow, String id){
-        // TODO: hacer eventos
+    public void showPopUp(Component component, int x, int y, int selectedRow, String id, String id_table){
         JPopupMenu popup_menu = new JPopupMenu();
 
-        JMenuItem update = new JMenuItem("Editar");
-        update.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(component, "Editar fila " + id);
-            }
-        });
-
-        JMenuItem delete = new JMenuItem("Borrar");
+        JMenuItem delete = new JMenuItem("Desasociar");
         delete.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                int result = new DialogMessages("Eliminar registro", "¿Desea borrar el registro " + id + " ?", 2).showMessageConfirm();
-                
+                int result = new DialogMessages("Desasociar registro", "¿Desea desasociar el registro " + id + " ?", 2).showMessageConfirm();
                 if(result == JOptionPane.OK_OPTION){
-                    session_ctrl.deleteRegister(id, table);
+                    session_ctrl.disassociateRegister(id, id_table, table_selected);
                     refreshTableTrue();
                 }
             }
         });
         
-        popup_menu.add(update);
         popup_menu.add(delete);
 
         popup_menu.show(component, x, y);
@@ -187,11 +177,15 @@ public class TableForeings extends javax.swing.JPanel {
     public void updateDropdown(){
         dropdown.removeAllItems();
         
-        session_ctrl.getOthers(id, table);
+        List others = session_ctrl.getOthers(id, table_selected);
+        
+        for(Object register : others){
+            dropdown.addItem(register.toString());
+        }
     }
     
     public void refreshTableTrue(){
-        registers_list = session_ctrl.getTableById(id, table);
+        registers_list = session_ctrl.getTableById(id, table_selected);
 
         if(table.equals("facturas")){
             columns_name = new String[]{"id", "fecha", "total", "metodo de pago"};

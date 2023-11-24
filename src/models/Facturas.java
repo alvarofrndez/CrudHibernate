@@ -94,6 +94,11 @@ public class Facturas  implements java.io.Serializable, Identificable {
     public String getIdentificator() {
         return this.idFac + " - " + this.metodoPago;
     }
+    
+    @Override
+    public String toString() {
+        return idFac + " - " + metodoPago;
+    }
 }
 
 

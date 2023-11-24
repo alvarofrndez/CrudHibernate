@@ -13,7 +13,6 @@ import models.Articulos;
 import models.Clientes;
 import models.Facturas;
 import models.Familias;
-import org.hibernate.Query;
 import org.hibernate.Transaction;
 
 /**
@@ -113,13 +112,21 @@ public class SessionController {
             List result = null;
             openSession();
             switch (table.toLowerCase()) {
-                case "facturas":
+                case "familias":
+                    Familias familia = (Familias) ss.get(Familias.class, id);
+                    result = new ArrayList<>(familia.getArticuloses());
+                    break;
+                case "articulos":
                     Articulos articulo = (Articulos) ss.get(Articulos.class, id);
                     result = new ArrayList<>(articulo.getFacturases());
                     break;
-                case "articulos":
+                case "facturas":
                     Facturas factura = (Facturas) ss.get(Facturas.class, id);
                     result = new ArrayList<>(factura.getArticuloses());
+                    break;
+                case "clientes":
+                    Clientes cliente = (Clientes) ss.get(Clientes.class, id);
+                    result = new ArrayList<>(cliente.getFacturases());
                     break;
             }
             closeSession();
@@ -134,13 +141,33 @@ public class SessionController {
             List result = null;
             openSession();
             switch (table.toLowerCase()) {
-                case "facturas":
-                    Articulos articulo = (Articulos) ss.get(Articulos.class, id);
-                    result = new ArrayList<>(articulo.getFacturases());
+                case "familias":
+                    Familias familia = (Familias) ss.get(Familias.class, id);
+                    List all_fam = articulos_ctrl.getArticulos(ss);
+                    
+                    all_fam.removeAll(familia.getArticuloses());
+                    result = all_fam;
                     break;
                 case "articulos":
+                    Articulos articulo = (Articulos) ss.get(Articulos.class, id);
+                    List all_art = facturas_ctrl.getFacturas(ss);
+                    
+                    all_art.removeAll(articulo.getFacturases());
+                    result = all_art;
+                    break;
+                case "facturas":
                     Facturas factura = (Facturas) ss.get(Facturas.class, id);
-                    result = new ArrayList<>(factura.getArticuloses());
+                    List all_fac = articulos_ctrl.getArticulos(ss);
+                    
+                    all_fac.removeAll(factura.getArticuloses());
+                    result = all_fac;
+                    break;
+                case "clientes":
+                    Clientes cliente = (Clientes) ss.get(Clientes.class, id);
+                    List all_cli = facturas_ctrl.getFacturas(ss);
+                    
+                    all_cli.removeAll(cliente.getFacturases());
+                    result = all_cli;
                     break;
             }
             closeSession();
@@ -286,6 +313,74 @@ public class SessionController {
                         
                         if(cliente != null){
                             ss.delete(cliente);
+                            ts.commit();
+                        }
+                        break;
+                }
+            }catch (Exception e) {
+                System.out.println(e.getMessage());
+                if(ts != null)
+                    ts.rollback();
+            }finally{
+                closeSession();
+            }
+        }
+    }
+    
+    public void disassociateRegister(String id, String id_table, String table_selected){
+        if(haveConnection()){
+            try{
+                openSession();
+                ts = ss.beginTransaction();
+                
+                switch(table_selected.toLowerCase()){
+                    case "familias":
+                        Familias familia = (Familias) ss.get(Familias.class, id_table);
+                        Articulos art_fam = (Articulos) ss.get(Articulos.class, id);
+  
+                        if(familia != null && art_fam != null){
+                            art_fam.setFamilias(null);
+                            familia.getArticuloses().remove(art_fam);
+                        
+                            ss.update(familia);
+                            ss.update(art_fam);
+                            ts.commit();
+                        }
+                        break;
+                    case "articulos":
+                        Articulos articulo = (Articulos) ss.get(Articulos.class, id);
+                        Set<Facturas> facturas = articulo.getFacturases();
+                        for(Facturas fac : facturas) {
+                            fac.getArticuloses().remove(articulo);
+                        }
+
+                        if(articulo != null){
+                            ss.delete(articulo);
+                            ts.commit();
+                        }
+                        break;
+                    case "facturas":
+                        Facturas factura = (Facturas) ss.get(Facturas.class, id);
+                        Set<Articulos> articulos = factura.getArticuloses();
+                        for(Articulos art : articulos) {
+                            art.getFacturases().remove(factura);
+                        }
+
+                        if(factura != null){
+                            ss.delete(factura);
+                            ts.commit();
+                        }
+                        break;
+                    case "clientes":
+                        Clientes cliente = (Clientes) ss.get(Clientes.class, id_table);
+                        Facturas fac_cli = (Facturas) ss.get(Facturas.class, id);
+                        
+                        if(cliente != null && fac_cli != null){
+                            cliente.getFacturases().remove(fac_cli);
+                            fac_cli.setClientes(null);
+                            
+                            ss.update(cliente);
+                            ss.update(fac_cli);
                             ts.commit();
                         }
                         break;

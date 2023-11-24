@@ -12,11 +12,6 @@ import java.util.Set;
  */
 public class Articulos  implements java.io.Serializable, Identificable {
 
-    @Override
-    public String toString() {
-        return "Articulos{" + "idArt=" + idArt + ", nomArt=" + nomArt + ", desArt=" + desArt + ", stock=" + stock + '}';
-    }
-
     private String idArt;
     private Familias familias;
     private String nomArt;
@@ -97,6 +92,11 @@ public class Articulos  implements java.io.Serializable, Identificable {
     @Override
     public String getIdentificator() {
         return this.idArt + " - " + this.nomArt;
+    }
+    
+    @Override
+    public String toString() {
+        return idArt + " - " + nomArt;
     }
 }
 
